@@ -1,0 +1,6 @@
+plugin.description: Download files within ruTorrent. Inspired by Novik's plugin
+plugin.author: Whatbox Inc.
+plugin.version: 1.0
+rtorrent.remote: error
+plugin.help: https://whatbox.ca/support
+php.version: 7.1
