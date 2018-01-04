@@ -13,7 +13,7 @@
 			if (plugin.enabled && (theWebUI.dID!="") && (theWebUI.dID.length==40))
 			{
 				if (theWebUI.settings["webui.fls.view"]) {
-					var file_number = obj.id.replace('_f_', '');
+					var file_number = obj.id.split('_f_')[1];
 					theWebUI.getData(theWebUI.dID, file_number);
 					return(false);
 				} else {
@@ -46,7 +46,7 @@
 
 					var fid = table.getFirstSelected();
 					if (this.settings["webui.fls.view"]) {
-						fno = obj.id.replace('_f_', '');
+						fno = fid.split('_f_')[1];
 					} else if (!this.dirs[this.dID].isDirectory(fid)) {
 						fno = fid.substr(3);
 					}
