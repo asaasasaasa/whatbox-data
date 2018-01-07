@@ -33,21 +33,21 @@ if (!$req->success()) {
 
 
 $filename = $req->val[0];
+
+// rtorrent does not populate this value for stopped torernts
+// so if this returns an empty string, we'll need to tell rtorrent
+// to load the necessary data before after which we can close it
+// to ensure we're not wasting resoures
 if ($filename == '') {
-    // Why Do We Need To Open The File Instead Of Just Using The Path?
-    http_response_code(500);
-    header('Content-Type: text/plain');
-    echo 'An error was encountered with the whatbox-data plugin. Please open a support ticket with the error code: WDWNTOTFIOJUTP';
-    exit;
-    // $req = new rXMLRPCRequest(
-    //     [
-    //         new rXMLRPCCommand("d.open", $_REQUEST['hash']),
-    //         new rXMLRPCCommand("f.frozen_path", [$_REQUEST['hash'], intval($_REQUEST['no'])]),
-    //         new rXMLRPCCommand("d.close", $_REQUEST['hash']),
-    //     ]
-    // );
-    // if ($req->success())
-    //     $filename = $req->val[1];
+    $req = new rXMLRPCRequest(
+        [
+            new rXMLRPCCommand("d.open", $_REQUEST['hash']),
+            new rXMLRPCCommand("f.frozen_path", [$_REQUEST['hash'], intval($_REQUEST['no'])]),
+            new rXMLRPCCommand("d.close", $_REQUEST['hash']),
+        ]
+    );
+    if ($req->success())
+        $filename = $req->val[1];
 }
 
 header('Content-Type: application/octet-stream');
