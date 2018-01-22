@@ -45,32 +45,31 @@
     if (plugin.canChangeMenu()) {
         plugin.createFileMenu = theWebUI.createFileMenu;
         theWebUI.createFileMenu = function( e, id ) {
-            if (plugin.createFileMenu.call(this, e, id)) {
-                if (plugin.enabled) {
-                    theContextMenu.add([CMENU_SEP]);
-                    var fno = null;
-                    var table = this.getTable("fls");
-                    if (table.selCount != 1) {
-                        return false;
-                    }
-
-                    var fid = table.getFirstSelected();
-                    if (this.settings["webui.fls.view"]) {
-                        fno = fid.split('_f_')[1];
-                    } else if (!this.dirs[this.dID].isDirectory(fid)) {
-                        fno = fid.substr(3);
-                    }
-                    theContextMenu.add([
-                        theUILang.getData,
-                        function() {
-                            this.href = './plugins/whatbox-data/action.php?hash=' + theWebUI.dID + '&no=' + fno;
-                            this.setAttribute('download', '');
-                        }
-                    ]);
+            var chain_result = plugin.createFileMenu.call(this, e, id);
+            if (plugin.enabled) {
+                theContextMenu.add([CMENU_SEP]);
+                var fno = null;
+                var table = this.getTable("fls");
+                if (table.selCount != 1) {
+                    return chain_result;
                 }
-                return(true);
+
+                var fid = table.getFirstSelected();
+                if (this.settings["webui.fls.view"]) {
+                    fno = fid.split('_f_')[1];
+                } else if (!this.dirs[this.dID].isDirectory(fid)) {
+                    fno = fid.substr(3);
+                }
+                theContextMenu.add([
+                    theUILang.getData,
+                    function() {
+                        this.href = './plugins/whatbox-data/action.php?hash=' + theWebUI.dID + '&no=' + fno;
+                        this.setAttribute('download', '');
+                    }
+                ]);
             }
-            return(false);
+
+            return chain_result;
         };
     }
 })();
