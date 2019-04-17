@@ -9,4 +9,4 @@
  theUILang.getData		= "Télécharger le fichier";
  theUILang.cantAccessData	= "Le serveur web n'a pas accès à ce fichier.";
 
-thePlugins.get("data").langLoaded();
+thePlugins.get("whatbox-data").langLoaded();

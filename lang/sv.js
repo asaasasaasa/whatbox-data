@@ -9,4 +9,4 @@
  theUILang.getData		= "Hämta fil";
  theUILang.cantAccessData	= "Webbserveranvändaren har inte åtkomst till data för denna torrent.";
 
-thePlugins.get("data").langLoaded();
+thePlugins.get("whatbox-data").langLoaded();
