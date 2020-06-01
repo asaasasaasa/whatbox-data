@@ -4,14 +4,6 @@ declare(strict_types=1);
 
 require_once('../../php/xmlrpc.php');
 
-// In the future, we should use RFC6266 UTF8 encoding
-// but as of Jan 2018, support is still questionable in some areas
-// we should definitely revisit this in the future
-function file_string(string $EscapeStr): string
-{
-    return str_replace(['"','*','/',':','<','>','?','\\','|'], '', $EscapeStr);
-}
-
 if (!isset($_GET['hash']) || !isset($_GET['no'])) {
     http_response_code(400);
     header('Content-Type: text/plain');
@@ -54,5 +46,5 @@ if ($filename == '') {
 
 $DownloadPath = preg_replace('/^\/(home|mnt\/sd[a-z0-9]+)\/([a-z0-9]+)\//', '/download/', $filename);
 
-header("HTTP/1.0 302 Moved Temporarily");
+http_response_code(302);
 header("Location: ". $DownloadPath);
