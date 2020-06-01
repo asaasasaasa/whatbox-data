@@ -5,11 +5,17 @@
 
 	// While in the context menu we can simply use
 	// a a[href][download] to process file downloads,
-	// the double-click process is more complex. So it's
-	// become necessary to use an iframe hack to start
-	// downloads this way
-	var DOWNLOAD_FRAME = document.createElement('iframe');
-	document.body.appendChild(DOWNLOAD_FRAME);
+	// the double-click process is more complex.
+	const DOWNLOAD_LINK = document.createElement('a');
+    DOWNLOAD_LINK.setAttribute('download', '');
+
+    function whatboxDownload ( hash, no ) {
+        document.body.appendChild(DOWNLOAD_LINK);
+        DOWNLOAD_LINK.href = './plugins/whatbox-data/action.php?hash=' + hash + '&no=' + no;
+        DOWNLOAD_LINK.click();
+        DOWNLOAD_LINK.remove();
+    }
+
 
     plugin.loadLang();
 
@@ -24,12 +30,12 @@
             {
                 if (theWebUI.settings["webui.fls.view"]) {
                     var file_number = obj.id.split('_f_')[1];
-					DOWNLOAD_FRAME.src = './plugins/whatbox-data/action.php?hash=' + theWebUI.dID + '&no=' + file_number;
+					whatboxDownload(theWebUI.dID, file_number);
                     return(false);
                 } else {
                     var lnk = this.getAttr(obj.id, "link");
                     if (lnk==null) {
-						DOWNLOAD_FRAME.src = './plugins/whatbox-data/action.php?hash=' + theWebUI.dID + '&no=' + obj.id.substr(3);
+                        whatboxDownload(theWebUI.dID, obj.id.substr(3));
                         return(false);
                     }
                 }
@@ -38,9 +44,6 @@
         };
     };
 
-    theWebUI.getData = function( hash, no ) {
-        DOWNLOAD_FRAME.src = './plugins/whatbox-data/action.php?hash=' + hash + '&no=' + no;
-    };
 
     if (plugin.canChangeMenu()) {
         plugin.createFileMenu = theWebUI.createFileMenu;

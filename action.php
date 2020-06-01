@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once('../../php/xmlrpc.php');
@@ -46,12 +47,12 @@ if ($filename == '') {
             new rXMLRPCCommand("d.close", $_REQUEST['hash']),
         ]
     );
-    if ($req->success())
+    if ($req->success()) {
         $filename = $req->val[1];
+    }
 }
 
-header('Content-Type: application/octet-stream');
-header('Content-disposition: attachment; filename="'.file_string(basename($filename)).'"');
+$DownloadPath = preg_replace('/^\/(home|mnt\/sd[a-z0-9]+)\/([a-z0-9]+)\//', '/download/', $filename);
 
-$internal = preg_replace('/^\/(home|mnt\/sd[a-z0-9]+)\/([a-z0-9]+)\//', '/ifiles/', $filename);
-header('X-Accel-Redirect: '.$internal);
+header("HTTP/1.0 302 Moved Temporarily");
+header("Location: ". $DownloadPath);
