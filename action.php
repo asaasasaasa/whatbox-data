@@ -24,6 +24,29 @@ if (!$req->success()) {
     exit;
 }
 
+// Helpers
+function pathArray(string $Path): array
+{
+    $Parts = explode('/', $Path);
+    $Return = array();
+    foreach ($Parts as $Part) {
+        if ($Part == '..') {
+            array_pop($Return);
+        } else {
+            if ($Part == '') {
+                continue;
+            }
+            $Return[] = $Part;
+        }
+    }
+    return $Return;
+}
+
+function pathString(string $Path): string
+{
+    return '/' . implode('/', pathArray($Path));
+}
+
 
 $filename = $req->val[0];
 
@@ -44,7 +67,18 @@ if ($filename == '') {
     }
 }
 
-$DownloadPath = preg_replace('/^\/(home|mnt\/sd[a-z0-9]+)\/([a-z0-9]+)\//', '/download/', $filename);
+// Resolve directory traversal
+$filename = pathString($filename);
+$username = posix_getpwuid(posix_geteuid())['name'];
 
-http_response_code(302);
-header("Location: ". $DownloadPath);
+if (!str_starts_with($filename, '/home/' . $username . '/')) {
+    http_response_code(500);
+    header('Content-Type: text/plain');
+    echo 'File path ' . $filename . ' did not start with /home/' . $username . '/ as expected';
+    exit;
+}
+
+$filename = substr($filename, strlen('/home/' . $username . '/'));
+
+http_response_code(303);
+header("Location: /download/" . $filename);
